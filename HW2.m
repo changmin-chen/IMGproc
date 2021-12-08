@@ -1,7 +1,60 @@
-%% Section 1: High frequency emphasis filter
+%% Section 1.1: Unsharp filtering
+% formula: f_sharp = f + w*(f - f_low-pass)
+% functions:
+% (1) fspecial: to create the filter
+% (2) imfilter: to filter the image
+clear, clc
+close all
+
+w = 1; % weight, for unsharp filtering
+img = imread('tire.tif');
+
+% low-pass filtering (using Gaussian filter)
+filter = fspecial('average', 9); % a low-pass filter
+img_lp = imfilter(img, filter);
+
+% display
+img_sharp = img + w*(img - img_lp);
+img_sharp = imhistmatch(img_sharp, img);
+
+figure,
+subplot(1,3,1), imshow(img), title('original image')
+subplot(1,3,2), imshow(img_lp), title('low-pass filtered image')
+subplot(1,3,3), imshow(img_sharp), title('sharped image')
+
+%% Section 1.2: High boost filtering
+% formula: f_sharp = (A-1)*f + f_high-pass
+% functions:
+% (1) fspecial: to create the filter
+% (2) imfilter: to filter the image
+clear, clc
+close all
+
+alpha = 0; % alpha for laplacian filter
+A = 1.5; % weight, for high boost filtering
+img = imread('tire.tif');
+
+% low-pass filtering (using Gaussian filter)
+filter = fspecial('laplacian', alpha); % a high-pass filter
+img_hp = imfilter(img, filter);
+
+% display
+img_sharp = (A-1)*img + img_hp;
+img_sharp = imhistmatch(img_sharp, img);
+
+figure,
+subplot(1,3,1), imshow(img), title('original image')
+subplot(1,3,2), imshow(img_hp), title('high-pass filtered image')
+subplot(1,3,3), imshow(img_sharp), title('sharped image')
+
+%% Section 1.3: High frequency emphasis filter
 % formula: H_hfe = a + b*H_hp
 % a>=0 and b>a
 % a = 0.25~0.5 and b=1.5~2.0
+% functions:
+% (1) fspecial: to create the filter
+% (2) imfilter: to filter the image
+
 clear, clc
 close all
 img = imread('tire.tif');
@@ -52,7 +105,7 @@ subplot(2,3,4), imshow(img_d2), title('image dilated by se2')
 subplot(2,3,5), imshow(img_ed2), title('image closed by se2')
 subplot(2,3,6), imshow(img_proc), title('processed image')
 % the processed image may be more connected compared to original image
-% less holes then original, but lose details
+% i.e. less holes then original. However, it losed details
 
 %% Section 3: Hit-or-miss
 % a basic morphological tool for shape detection
@@ -61,11 +114,12 @@ clear, clc
 close all
 img = imread('test.tiff');
 
+% define the target shape X
 X = [0 1 0; 1 1 1; 0 1 0]; % X, target shape
 W = ones(5); 
 W(2:end-1, 2:end-1) = W(2:end-1, 2:end-1) - X; % W-X, the window
 
-% mophorlogical processing
+% peform hit-or-miss algorithm
 img_er = imerode(img, X);
 img_er_cm = imerode(~img, W);
 img_hm = img_er & img_er_cm;
@@ -84,9 +138,9 @@ close all
 load('test.mat');
 img = logical(img);
 
-B = [0 1 0; 1 1 1; 0 1 0]; % B, the origin
+% select the inital point to grow
 X0 = false(size(img));
-X0(170, 230) = true; % select the inital point to grow
+X0(170, 230) = true; 
 
 % perform region filling
 img_c = ~img; % complement of image
