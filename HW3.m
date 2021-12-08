@@ -62,11 +62,27 @@ img = (img - min(img(:))) / (max(img(:)) - min(img(:)));
 img_n = imnoise(img, 'salt & pepper', 0.05);
 img_amf = adaptiveMedFilt(img_n);
 
-
 figure,
 subplot(1,3,1), imshow(img), title('Original image')
 subplot(1,3,2), imshow(img_n), title('Noisy image')
 subplot(1,3,3), imshow(img_amf), title('Adaptive median filter')
+
+%% Section 4: Advanced noise reduction technique
+clear, clc
+close all
+img = double(imresize(rgb2gray(imread('saturn.png')), [512, 512]));
+img = (img - min(img(:))) / (max(img(:)) - min(img(:)));
+img_n = imnoise(img, 'gaussian', 0, 0.05);
+
+% wavelet denoising
+% ***function "wdenoise" requires Wavelet Toolbox***
+img_dn = wdenoise2(img_n);
+
+figure,
+subplot(1,3,1), imshow(img), title('Original image')
+subplot(1,3,2), imshow(img_n), title('Noisy image')
+subplot(1,3,3), imshow(img_dn), title('Wavelet-denoised image')
+
 
 %% helper functions
 function output = charmmean(C)
