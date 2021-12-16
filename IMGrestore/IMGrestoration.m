@@ -41,14 +41,3 @@ subplot(1,3,1), imshow(img), title('original image')
 subplot(1,3,2), imshow(J), title('noised image')
 subplot(1,3,3), imshow(K), title('de-noised image')
 
-%% Adaptive median filter
-% noise type: salt & papper noise
-
-
-%%
-
-
-
-
-
-

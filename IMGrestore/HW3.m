@@ -57,7 +57,7 @@ subplot(1,3,3), imshow(img_wie), title('Adaptive mean filter')
 % denoising Salt & Pepperer noise using adaptive median filter
 clear, clc
 close all
-img = double(imresize(rgb2gray(imread('saturn.png')), [64, 64]));
+img = double(imresize(rgb2gray(imread('saturn.png')), [128, 128]));
 img = (img - min(img(:))) / (max(img(:)) - min(img(:)));
 img_n = imnoise(img, 'salt & pepper', 0.05);
 img_amf = adaptiveMedFilt(img_n);
@@ -75,7 +75,7 @@ img = (img - min(img(:))) / (max(img(:)) - min(img(:)));
 img_n = imnoise(img, 'gaussian', 0, 0.05);
 
 % wavelet denoising
-% ***function "wdenoise" requires Wavelet Toolbox***
+% ***the function "wdenoise" requires Wavelet Toolbox***
 img_dn = wdenoise2(img_n);
 
 figure,
