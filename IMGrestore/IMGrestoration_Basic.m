@@ -1,6 +1,6 @@
+%% Section 1: Noise estimation
 clear, clc
 close all
-
 img = double(imread('eight.tif'));
 img = (img-min(img(:))) / (max(img(:))-min(img(:)));
 
@@ -27,7 +27,7 @@ subplot(3,2,4), plot(linspace(0,1,256),h_ori), title('original histogram')
 subplot(3,2,5), imshow(roi_noise), title('noised background roi')
 subplot(3,2,6), plot(linspace(0,1,256),h_noise), title('noised histogram')
 
-%% De-noise using wiener filter
+%% Section 2: De-noise using wiener filter
 clear, clc
 close all
 RGB = imread('saturn.png');
@@ -40,4 +40,3 @@ figure,
 subplot(1,3,1), imshow(img), title('original image')
 subplot(1,3,2), imshow(J), title('noised image')
 subplot(1,3,3), imshow(K), title('de-noised image')
-
