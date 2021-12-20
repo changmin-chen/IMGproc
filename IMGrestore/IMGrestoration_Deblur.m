@@ -2,8 +2,8 @@
 clear, clc
 close all
 
-%%% parameters setting
-% for image size (square)
+%---parameters setting---
+% for image size (256 by 256)
 N = 256;
 % for unknown noise (Gaussian noise)
 sigma = 0.05; % std for Gaussian
@@ -18,7 +18,7 @@ radius = N/2;
 % read image
 img = imresize(double(imread('cameraman.tif')), [N, N]);
 img = (img-min(img(:)))/(max(img(:))-min(img(:)));
-img = imnoise(img, 'gaussian', 0, sigma); % addicitve gaussian noise
+img = imnoise(img, 'gaussian', 0, sigma); % addicitve unknown gaussian noise
 
 % point spread function for motion noise
 PSF = fspecial('motion', len, theta);
@@ -28,7 +28,7 @@ img_motion = imfilter(img, PSF, 'circular');
 
 %% Section 1: Inverse filtering & Pseudo-inverse filtering & Radially-limited inverse filtering
 % show images
-figure,
+figure('Name', 'Section 1: Basic inverse filtering'),
 subplot(3,2,1),
 imshow(img), title('original image')
 subplot(3,2,2),
@@ -38,7 +38,7 @@ imshow(img_motion), title('image with motion noise')
 PSF_fr = fft2(PSF, N, N);
 
 % (a) inverse filtering
-idx = abs(PSF_fr)>0; % prevent from 0 devided by 0 will produce NaN
+idx = abs(PSF_fr)>0; % prevent from 0 devided by 0 (this will produce NaN)
 img_invfilt = fft2(img_motion);
 img_invfilt(idx) = img_invfilt(idx) ./ PSF_fr(idx);
 img_invfilt = abs(ifft2(img_invfilt));
@@ -68,23 +68,40 @@ imshow(img_lim_invfilt), title('radially limited inverse filtering')
 estimated_nsr = 0;
 wnr2 = deconvwnr(img_motion, PSF, estimated_nsr);
 
-figure,
+figure('Name', 'Section 2: Deblur by Wiener filter'),
 subplot(1,2,1),
 imshow(img_motion), title('image with motion noise')
 subplot(1,2,2),
-imshow(wnr2), title('restoration using deconvwnr')
+imshow(wnr2), title('deblured using deconvwnr')
 
-%% Section 3: Deblur image using 
-iter = 5;
-luc1 = deconvlucy(img_motion, PSF, iter);
+%% Section 3: Deblur image using deconvlucy
+% MATLAB function: "deconvlucy"
+iter = 20;
+lucy = deconvlucy(img_motion, PSF, iter);
 
-figure,
+figure('Name', 'Section 3: Deblur by deconvlucy'),
 subplot(1,2,1),
 imshow(img_motion), title('image with motion noise')
 subplot(1,2,2),
-imshow(wnr2), title('restoration using deconvlucy')
+imshow(lucy), title('deblured using deconvlucy')
+
+%% Section 4: Deblur image using other methods
+% MATLAB function: deconvblind
+[blind, PSFr] = deconvblind(img_motion, PSF);
+
+% MATLAB function: deconvreg
+reg = deconvreg(img_motion, PSF);
+
+figure('Name', 'Section 4: Deblur using other methods')
+subplot(1,3,1),
+imshow(img_motion), title('image with motion noise')
+subplot(1,3,2),
+imshow(blind), title('deblured using deconvblind')
+subplot(1,3,3),
+imshow(reg), title('deblured using deconvreg')
 
 %% helper functions
+
 function mask = circle_mask(img, radius)
 % the processing region in pseudo-inverse filtering
 mask = false(size(img));
