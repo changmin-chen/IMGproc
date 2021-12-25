@@ -68,10 +68,12 @@ imshow(img_lim_invfilt), title('radially limited inverse filtering')
 estimated_nsr = 0;
 wnr2 = deconvwnr(img_motion, PSF, estimated_nsr);
 
-figure('Name', 'Section 2: Deblur by Wiener filter'),
-subplot(1,2,1),
+figure('Name', 'Section 2~4: Deblur using Advanced filter'),
+subplot(3,2,1),
+imshow(img), title('original image')
+subplot(3,2,2)
 imshow(img_motion), title('image with motion noise')
-subplot(1,2,2),
+subplot(3,2,3),
 imshow(wnr2), title('deblured using deconvwnr')
 
 %% Section 3: Deblur image using deconvlucy
@@ -79,10 +81,7 @@ imshow(wnr2), title('deblured using deconvwnr')
 iter = 20;
 lucy = deconvlucy(img_motion, PSF, iter);
 
-figure('Name', 'Section 3: Deblur by deconvlucy'),
-subplot(1,2,1),
-imshow(img_motion), title('image with motion noise')
-subplot(1,2,2),
+subplot(3,2,4),
 imshow(lucy), title('deblured using deconvlucy')
 
 %% Section 4: Deblur image using other methods
@@ -92,12 +91,9 @@ imshow(lucy), title('deblured using deconvlucy')
 % MATLAB function: deconvreg
 reg = deconvreg(img_motion, PSF);
 
-figure('Name', 'Section 4: Deblur using other methods')
-subplot(1,3,1),
-imshow(img_motion), title('image with motion noise')
-subplot(1,3,2),
+subplot(3,2,5),
 imshow(blind), title('deblured using deconvblind')
-subplot(1,3,3),
+subplot(3,2,6),
 imshow(reg), title('deblured using deconvreg')
 
 %% helper functions
