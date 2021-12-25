@@ -1,11 +1,15 @@
 # IMGproc
-image processing techniques
+Image Processing Techniques:
 
-Image Enhancement
+### Image Enhancement
 1. Spatial domain
 2. Frequency domain
-3. Morphological
+3. Morphological processing
 
----Image Restoration---
+### Image Restoration
 1. Noise estimation
 2. Denoise/ Deblur
+
+### Image Segmentation
+1. Edge detection
+2. Watershed segmentation
