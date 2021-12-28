@@ -1,3 +1,62 @@
+%% Section 1: Finite Mixture Model (Gaussian Mixture)
+clear, clc
+close all
+
+k = 2;
+X = [randn(100,2)*0.75+ones(100,2); randn(100,2)*0.5-ones(100,2)];
+GMModel = fitgmdist(X, k);
+
+figure
+y = [zeros(100,1);ones(100,1)];
+h = gscatter(X(:,1),X(:,2),y);
+hold on
+gmPDF = @(x,y) arrayfun(@(x0,y0) pdf(GMModel,[x0 y0]),x,y);
+g = gca;
+fcontour(gmPDF,[g.XLim g.YLim])
+title('{\bf Scatter Plot and Fitted Gaussian Mixture Contours}')
+legend(h,'Model 0','Model1')
+hold off
+
+%% Section 2: Region-Growing
+clear, clc
+close all
+
+load mri
+D = double(squeeze(D));
+img = imresize(mat2gray(D(:,:,15), [0, 255]), 2);
+
+% parameters
+seed_x = 83;
+seed_y = 89;
+maxdist = 0.04;
+noise_mu = 0;
+noise_sigma = 0.005;
+
+% perform region-growing on original image
+J = regiongrowing(img, seed_x, seed_y, maxdist);
+fprintf(['Region size = ', num2str(sum(sum(J))),...
+    ' pixels. generated from region-growing on original image.\n']);
+
+% perform region-growing on noisy image (addictive Gaussian noise)
+% the addictive noise were weakened via applying smoothing-filter
+img_noise = imnoise(img, 'gaussian', noise_mu, noise_sigma);
+maxdist_extend = 1.5*maxdist;
+filter = fspecial('average', [5, 5]);
+img_noise = imfilter(img_noise, filter);
+J_noise = regiongrowing(img_noise, seed_x, seed_y, maxdist_extend);
+fprintf(['Region size = ', num2str(sum(sum(J_noise))),...
+    ' pixels. generated from region-growing on noisy image.\n']);
+
+% display the results
+figure('Name', 'Region-Growing. Seed point = red X'), 
+subplot(2,2,1), imshow(img), title('original image')
+hold on, plot(seed_y, seed_x, 'xr', 'MarkerSize', 5, 'LineWidth', 2), hold off
+subplot(2,2,2), imshow(img+J), title('region growing on orignal image')
+subplot(2,2,3), imshow(img_noise), title('noisy image (but after smoothing-denoise)')
+hold on, plot(seed_y, seed_x, 'xr', 'MarkerSize', 5, 'LineWidth', 2), hold off
+subplot(2,2,4), imshow(img_noise+J_noise), title('region growing on noisy image')
+
+%% helper functions
 function J = regiongrowing(I, x, y, maxdist)
 % This function performs "region growing" in an image from a specified
 % seedpoint (x,y)
@@ -112,3 +171,5 @@ end
 
 % Return the segmented area as logical matrix
 J=J>1;
+
+end

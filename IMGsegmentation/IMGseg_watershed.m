@@ -22,18 +22,19 @@ subplot(1,2,2), imshow(I_en), title('enhanced');
 %% Step 2: reduce local minima (impose deep minima) of the image
 Ic = imcomplement(I_en);
 [I_impose, marker] = imimpose(Ic, H);
-tmp  = I_en;
-tmp(marker) = 255;
+tmp  = Ic;
+tmp(marker) = 0;
 figure,
-subplot(1,3,1), imshow(I_en), title('before minima-imposing');
-subplot(1,3,2), imshow(tmp), title('overlayed marker image');
+subplot(1,3,1), imshow(Ic), title('complementary image');
+subplot(1,3,2), imshow(tmp), title('overlay markers on image');
 subplot(1,3,3), imshow(I_impose), title('after minima-imposing')
 
 %% Step 3: watershed segmentation
 wat = watershed(I_impose);
 rgb = label2rgb(wat);
 figure, 
-imshow(rgb), title('watershed-segmented image')
+subplot(1,2,1), imshow(I), title('original')
+subplot(1,2,2), imshow(rgb), title('watershed-segmented')
 
 %% helper functions
 function I_en = imenhance(I, se)
