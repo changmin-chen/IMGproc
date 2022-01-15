@@ -13,3 +13,8 @@ Image Processing Techniques:
 ### Image Segmentation
 1. Edge detection
 2. Watershed segmentation
+
+### Geometric Transformation
+1. Registration
+2. Feature detection
+3. Wavelet multi-focus fusion
