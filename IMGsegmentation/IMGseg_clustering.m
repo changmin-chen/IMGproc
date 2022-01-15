@@ -140,12 +140,23 @@ subplot(2,2,4), imshow(img_noise+J_noise), title('region growing on noisy image'
 %% Section 6: Region Splitting
 % multiple iterations of the steps of: "Split" and "Merge"
 
-
+%% Section 7: Level-set methods
+% characteristics:
+% relative to region-growing method, the level-set method refer to
+% not only the pixel-value intensities, but also the curvature.
+% -----
+% usage:
+% need to specify initial ROI to grow or shrink
+% -----
+% functions involved:
+% (1) level-set function
+% which has one more dimension than the image grid
+% (2) speed function
+% (3) curvature function
+% to control the edge curvature
 
 %% Other Methods:
-% (1) Partial differential: level-set
-% (2) Machine Learning
-% (3) Deep Learning
+% Deep Learning
 
 %% helper functions
 function J = regiongrowing(I, x, y, maxdist)
